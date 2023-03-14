@@ -60,6 +60,8 @@ in mkDerivation {
   ] ++ lib.optionals (gnuradio.hasFeature "gr-ctrlport") [
     thrift
     python.pkgs.thrift
+  ] ++ lib.optionals (gnuradio.hasFeature "nonfree") [
+    sdrplay
   ] ++ lib.optionals stdenv.isDarwin [
     darwin.apple_sdk.frameworks.IOKit
     darwin.apple_sdk.frameworks.Security
@@ -69,6 +71,11 @@ in mkDerivation {
       "-DENABLE_PYTHON=ON"
     else
       "-DENABLE_PYTHON=OFF"
+    )
+    (if (gnuradio.hasFeature "nonfree") then
+      "-DENABLE_NONFREE=TRUE"
+    else
+      "-DENABLE_NONFREE=FALSE"
     )
   ];
   nativeBuildInputs = [
